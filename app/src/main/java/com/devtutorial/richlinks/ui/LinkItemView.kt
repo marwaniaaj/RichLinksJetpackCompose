@@ -22,8 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,11 +40,38 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.devtutorial.richlinks.MainScreen
 import com.devtutorial.richlinks.R
+import com.devtutorial.richlinks.model.LinkMetadata
 import com.devtutorial.richlinks.model.LinkViewState
 import com.devtutorial.richlinks.model.fetchMetadata
 import com.devtutorial.richlinks.ui.theme.RichLinksTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.os.Parcelable
+
+/**
+ * A custom [Saver] object for the [LinkViewState] sealed class.
+ *
+ * This saver is responsible for saving and restoring instances of [LinkViewState]
+ * to and from a format that can be handled by [rememberSaveable].
+ *
+ * **Note:** The [LinkMetadata] class must implement the [Parcelable] interface.
+ */
+val LinkViewStateSaver = Saver<LinkViewState, Any>(
+    save = { linkViewState ->
+        when (linkViewState) {
+            LinkViewState.Loading -> "Loading"
+            is LinkViewState.Success -> linkViewState.metadata
+            is LinkViewState.Failure -> linkViewState.exception.message ?: "Error"
+        }
+    },
+    restore = { savedValue ->
+        when (savedValue) {
+            is LinkMetadata -> LinkViewState.Success(savedValue)
+            is String -> LinkViewState.Failure(Exception(savedValue))
+            else -> LinkViewState.Loading
+        }
+    }
+)
 
 @Composable
 fun LinkItemView(
@@ -52,8 +80,8 @@ fun LinkItemView(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    var loadingState by remember {
-        mutableStateOf<LinkViewState>(LinkViewState.Loading)
+    var loadingState by rememberSaveable(stateSaver = LinkViewStateSaver) {
+        mutableStateOf(LinkViewState.Loading)
     }
 
     LaunchedEffect(link) {
