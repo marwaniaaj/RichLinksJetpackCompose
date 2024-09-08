@@ -1,6 +1,8 @@
 package com.devtutorial.richlinks.model
 
+import android.os.Parcelable
 import android.util.Log
+import kotlinx.parcelize.Parcelize
 import org.jsoup.Jsoup
 import java.net.URL
 
@@ -10,13 +12,14 @@ sealed class LinkViewState {
     data class Failure(val exception: Exception): LinkViewState()
 }
 
+@Parcelize
 data class LinkMetadata(
     val url: String,
     val host: String,
     val title: String? = null,
     val description: String? = null,
     val imageUrl: String? = null
-)
+): Parcelable
 
 /**
  * Fetches metadata for a given URL, such as title, description, and image URL.
