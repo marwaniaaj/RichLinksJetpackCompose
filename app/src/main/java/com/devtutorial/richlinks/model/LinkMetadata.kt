@@ -18,6 +18,17 @@ data class LinkMetadata(
     val imageUrl: String? = null
 )
 
+/**
+ * Fetches metadata for a given URL, such as title, description, and image URL.
+ *
+ * This function uses [Jsoup](https://jsoup.org/) to parse the HTML content of the URL
+ * and extract relevant metadata.
+ * It attempts to retrieve the title, description (using the `og:description` meta tag),
+ * and image URL (using the `og:image` meta tag).
+ *
+ * @param url The URL to fetch metadata from.
+ * @return A [LinkViewState] object representing the result of the metadata fetch operation.
+ */
 fun fetchMetadata(url: String): LinkViewState {
     return try {
         val host = URL(url).host

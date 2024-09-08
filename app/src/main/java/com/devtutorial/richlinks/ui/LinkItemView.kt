@@ -186,7 +186,7 @@ fun LinkItemView(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun RichLinksPreview() {
     RichLinksTheme(dynamicColor = false) {
         MainScreen()
     }

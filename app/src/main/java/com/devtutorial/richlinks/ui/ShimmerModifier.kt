@@ -15,6 +15,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 
+/**
+ * Applies a shimmer effect to the Modifier, creating a shimmering animation that is typically used
+ * as a placeholder for loading content.
+ *
+ * Reference: [Shimmer & Shadow Loading Effect Animation with Jetpack Compose](https://proandroiddev.com/shimmer-shadow-loading-effect-animation-with-jetpack-compose-f4b3de28dc2b).
+ *
+ * @param widthOfShadowBrush The width of the shimmer brush used to create the gradient effect.
+ * @param angleOfAxisY The angle of the axis Y for the gradient.
+ * @param durationMillis The duration of the shimmer animation in milliseconds.
+ * @return A Modifier that applies the shimmer effect.
+ */
+
 fun Modifier.shimmer(
     widthOfShadowBrush: Int = 500,
     angleOfAxisY: Float = 270f,

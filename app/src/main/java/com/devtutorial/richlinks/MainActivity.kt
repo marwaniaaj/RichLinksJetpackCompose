@@ -64,7 +64,6 @@ fun MainScreen() {
         ) {
             items(linksList) { link ->
                 LinkItemView(link = link)
-                //Text(link)
             }
         }
     }
@@ -72,7 +71,7 @@ fun MainScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun RichLinksPreview() {
     RichLinksTheme(dynamicColor = false) {
         MainScreen()
     }
