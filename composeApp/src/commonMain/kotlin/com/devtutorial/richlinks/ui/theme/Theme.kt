@@ -86,7 +86,6 @@ val LightColorScheme = lightColorScheme(
 @Composable
 fun RichLinksTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

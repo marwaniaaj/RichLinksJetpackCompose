@@ -63,7 +63,7 @@ fun LinkItemView(
             .clip(RoundedCornerShape(15.dp))
             .fillMaxWidth()
             .height(90.dp)
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
     ) {
         when (val state = loadingState) {
             is LinkViewState.Loading -> LoadingView()

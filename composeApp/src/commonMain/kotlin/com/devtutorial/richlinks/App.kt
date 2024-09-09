@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ fun MainScreen() {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)),
                 title = { Text("Rich Links") },
             )
         },
@@ -65,6 +67,7 @@ fun MainScreen() {
 expect fun openLink(link: String)
 
 expect fun getHttpClient(): HttpClient
+
 
 @Composable
 expect fun MultiplatformAsyncImage(imageUrl: String, modifier: Modifier)
