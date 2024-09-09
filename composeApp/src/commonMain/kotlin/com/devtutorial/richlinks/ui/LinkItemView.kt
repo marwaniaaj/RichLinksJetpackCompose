@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.devtutorial.richlinks.MultiplatformAsyncImage
+import com.devtutorial.richlinks.multiplatformAsyncImage
 import com.devtutorial.richlinks.model.LinkMetadata
 import com.devtutorial.richlinks.model.LinkViewState
 import com.devtutorial.richlinks.model.fetchMetadata
@@ -42,7 +42,7 @@ import richlinks.composeapp.generated.resources.link_off
 @Composable
 fun LinkItemView(
     link: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var loadingState by remember { mutableStateOf<LinkViewState>(LinkViewState.Loading) }
 
@@ -52,7 +52,7 @@ fun LinkItemView(
         }
         val urlBuilder = parseUrl(link)?.let { URLBuilder(it) }
         if (urlBuilder == null) {
-            loadingState =  LinkViewState.Failure(Exception("Failed to fetch URL"))
+            loadingState = LinkViewState.Failure(Exception("Failed to fetch URL"))
         }
         val builder = URLBuilder(parsedUrl as Url).build()
         loadingState = fetchMetadata(builder)
@@ -100,7 +100,8 @@ private fun SuccessView(metadata: LinkMetadata, link: String) {
         LaunchedEffect(metadata.imageUrl) {
             url.value = metadata.imageUrl ?: ""
         }
-        MultiplatformAsyncImage(
+
+        multiplatformAsyncImage(
             imageUrl = url.value,
             modifier = Modifier
                 .size(74.dp)

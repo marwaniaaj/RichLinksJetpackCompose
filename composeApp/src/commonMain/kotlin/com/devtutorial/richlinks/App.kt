@@ -68,6 +68,5 @@ expect fun openLink(link: String)
 
 expect fun getHttpClient(): HttpClient
 
-
 @Composable
-expect fun MultiplatformAsyncImage(imageUrl: String, modifier: Modifier)
+expect fun multiplatformAsyncImage(imageUrl: String, modifier: Modifier)

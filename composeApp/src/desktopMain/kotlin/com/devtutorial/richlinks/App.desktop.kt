@@ -43,7 +43,7 @@ actual fun getHttpClient(): HttpClient {
 }
 
 @Composable
-actual fun MultiplatformAsyncImage(imageUrl: String, modifier: Modifier) {
+actual fun multiplatformAsyncImage(imageUrl: String, modifier: Modifier) {
     val state = remember { mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty) }
     SubcomposeAsyncImage(
         modifier = modifier,

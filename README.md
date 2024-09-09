@@ -3,6 +3,8 @@
 
 **RichLinksJetpackCompose** is a Kotlin Compose Multiplatform app designed to render rich links, allowing users to embed and display detailed link previews seamlessly across multiple platforms. This app targets **Android**, **iOS**, **Desktop**, and **WasmJS** (WebAssembly with JavaScript), ensuring consistent user experiences across mobile, desktop, and web environments.
 
+<img src="https://github.com/percy-g2/RichLinksJetpackCompose/blob/main/screenshot/Presentation.png" alt="Presentation"/>
+
 ## Features
 
 - **Multiplatform**: Runs on Android, iOS, Desktop (macOS, Windows, Linux), and Web (WasmJS).
