@@ -19,7 +19,7 @@
 | Android  | ✅      | Full support for all Android versions running Jetpack Compose. |
 | iOS      | ✅      | Supports iOS devices using Compose Multiplatform. |
 | Desktop  | ✅      | Runs on macOS, Windows, and Linux. |
-| WasmJS   | ✅      | Fully functional on modern web browsers using WebAssembly. |
+| WasmJS   | 🚧      | In development. Will support modern web browsers using WebAssembly. |
 
 ## Getting Started
 
