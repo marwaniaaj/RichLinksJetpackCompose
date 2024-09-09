@@ -1,5 +1,6 @@
 package com.devtutorial.richlinks.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +37,14 @@ import com.devtutorial.richlinks.model.LinkMetadata
 import com.devtutorial.richlinks.model.LinkViewState
 import com.devtutorial.richlinks.model.fetchMetadata
 import com.devtutorial.richlinks.openLink
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.CompottieException
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.animateLottieCompositionAsState
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import io.ktor.http.*
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import richlinks.composeapp.generated.resources.Res
 import richlinks.composeapp.generated.resources.broken_image
@@ -76,15 +84,38 @@ fun LinkItemView(
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun LoadingView() {
+
+    val composition = rememberLottieComposition {
+        LottieCompositionSpec.JsonString(Res.readBytes("files/loading.json").decodeToString())
+    }
+
+    LaunchedEffect(composition) {
+        try {
+            composition.await()
+        } catch (t: CompottieException) {
+            t.printStackTrace()
+        }
+    }
+
+
+    val animationState by animateLottieCompositionAsState(
+        composition = composition.value,
+        iterations = Compottie.IterateForever
+    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary,
-            strokeWidth = 5.dp
+        Image(
+            painter = rememberLottiePainter(
+                composition = composition.value,
+                progress = { animationState },
+            ),
+            contentDescription = "Loading Lottie animation",
+            contentScale = ContentScale.FillBounds
         )
     }
 }

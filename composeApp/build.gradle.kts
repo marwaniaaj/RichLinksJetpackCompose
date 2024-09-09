@@ -92,6 +92,9 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.coil.network.ktor3)
             implementation(libs.coil.compose)
+
+            // lottie
+            implementation(libs.compottie)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
