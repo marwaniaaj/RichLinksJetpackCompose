@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.devtutorial.richlinks.ui.LinkItemView
 import com.devtutorial.richlinks.ui.theme.RichLinksTheme
-import io.ktor.client.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -65,8 +64,3 @@ fun MainScreen() {
 }
 
 expect fun openLink(link: String)
-
-expect fun getHttpClient(): HttpClient
-
-@Composable
-expect fun multiplatformAsyncImage(imageUrl: String, modifier: Modifier)

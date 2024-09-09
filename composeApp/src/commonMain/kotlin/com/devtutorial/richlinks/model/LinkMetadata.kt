@@ -1,6 +1,6 @@
 package com.devtutorial.richlinks.model
 
-import com.devtutorial.richlinks.getHttpClient
+import com.devtutorial.richlinks.network.HttpClient
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
 import io.ktor.client.request.*
@@ -35,7 +35,7 @@ data class LinkMetadata(
 suspend fun fetchMetadata(url: Url): LinkViewState {
 
     return runCatching {
-        val response = getHttpClient().get(url)
+        val response = HttpClient.client.get(url)
 
         val htmlContent: String = response.bodyAsText()
         if (htmlContent.isEmpty()) {

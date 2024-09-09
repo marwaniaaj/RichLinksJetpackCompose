@@ -26,17 +26,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.devtutorial.richlinks.multiplatformAsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
 import com.devtutorial.richlinks.model.LinkMetadata
 import com.devtutorial.richlinks.model.LinkViewState
 import com.devtutorial.richlinks.model.fetchMetadata
 import com.devtutorial.richlinks.openLink
 import io.ktor.http.*
-import io.ktor.http.URLBuilder
 import org.jetbrains.compose.resources.painterResource
 import richlinks.composeapp.generated.resources.Res
+import richlinks.composeapp.generated.resources.broken_image
 import richlinks.composeapp.generated.resources.link_off
 
 @Composable
@@ -101,7 +104,7 @@ private fun SuccessView(metadata: LinkMetadata, link: String) {
             url.value = metadata.imageUrl ?: ""
         }
 
-        multiplatformAsyncImage(
+        MultiplatformAsyncImage(
             imageUrl = url.value,
             modifier = Modifier
                 .size(74.dp)
@@ -143,6 +146,50 @@ private fun FailureView() {
         Text(
             text = "Provided link is invalid",
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+        )
+    }
+}
+
+@Composable
+fun MultiplatformAsyncImage(imageUrl: String, modifier: Modifier) {
+    runCatching {
+        val state = remember { mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty) }
+        SubcomposeAsyncImage(
+            modifier = modifier,
+            model = imageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            onState = {
+                state.value = it
+            }
+        ) {
+            when (state.value) {
+                is AsyncImagePainter.State.Loading -> {
+                    CircularProgressIndicator()
+                }
+
+                is AsyncImagePainter.State.Error -> {
+                    Icon(
+                        painter = painterResource(Res.drawable.broken_image),
+                        contentDescription = null,
+                        modifier = Modifier.size(35.dp)
+                    )
+                }
+
+                else -> {
+                    SubcomposeAsyncImageContent(
+                        modifier = Modifier
+                            .size(90.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                    )
+                }
+            }
+        }
+    }.getOrElse {
+        Icon(
+            painter = painterResource(Res.drawable.link_off),
+            contentDescription = null,
+            modifier = Modifier.size(35.dp)
         )
     }
 }
