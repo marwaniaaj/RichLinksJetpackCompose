@@ -149,8 +149,18 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.devtutorial.richlinks"
+            packageName = "Rich Links"
             packageVersion = "1.0.0"
+
+            macOS {
+                iconFile.set(project.file("src/macosMain/resources/AppIcon.icns"))
+            }
+            windows {
+                iconFile.set(project.file("src/windowsMain/resources/AppIcon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("src/linuxMain/resources/AppIcon.png"))
+            }
         }
     }
 }
