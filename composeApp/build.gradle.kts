@@ -54,6 +54,8 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
+        val wasmJsMain by getting
+
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
@@ -95,6 +97,10 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.cio)
+        }
+
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.js)
         }
     }
 }
