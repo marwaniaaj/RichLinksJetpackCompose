@@ -40,25 +40,18 @@ fun App() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val linksList = remember {
-        mutableStateOf(
-            listOf(
-                "https://not-valid-url", // --> Invalid URL
-                "https://m3.material.io/develop/android/jetpack-compose", // --> Valid URL
-                "https://expatexplore.com/blog/when-to-travel-weather-seasons/", // --> URL that does not contain image
-            )
-        )
-    }
+    val sampleList = listOf(
+        "https://not-valid-url", // --> Invalid URL
+        "https://m3.material.io/blog/material-3-compose-stable", // --> Valid URL
+        "https://expatexplore.com/blog/when-to-travel-weather-seasons/", // --> URL that does not contain image
+    )
+    val linksList = remember { mutableStateOf(sampleList) }
     val pullToRefreshState = rememberPullToRefreshState()
     if (pullToRefreshState.isRefreshing) {
         LaunchedEffect(true) {
             linksList.value = emptyList()
             delay(2000)
-            linksList.value = listOf(
-                "https://not-valid-url", // --> Invalid URL
-                "https://m3.material.io/develop/android/jetpack-compose", // --> Valid URL
-                "https://expatexplore.com/blog/when-to-travel-weather-seasons/", // --> URL that does not contain image
-            )
+            linksList.value = sampleList
             pullToRefreshState.endRefresh()
         }
     }
