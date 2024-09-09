@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -87,7 +86,6 @@ fun LinkItemView(
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun LoadingView() {
-
     val composition = rememberLottieComposition {
         LottieCompositionSpec.JsonString(Res.readBytes("files/loading.json").decodeToString())
     }
@@ -181,8 +179,27 @@ private fun FailureView() {
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun MultiplatformAsyncImage(imageUrl: String, modifier: Modifier) {
+    val composition = rememberLottieComposition {
+        LottieCompositionSpec.JsonString(Res.readBytes("files/loading.json").decodeToString())
+    }
+
+    LaunchedEffect(composition) {
+        try {
+            composition.await()
+        } catch (t: CompottieException) {
+            t.printStackTrace()
+        }
+    }
+
+
+    val animationState by animateLottieCompositionAsState(
+        composition = composition.value,
+        iterations = Compottie.IterateForever
+    )
+
     runCatching {
         val state = remember { mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty) }
         SubcomposeAsyncImage(
@@ -196,7 +213,19 @@ fun MultiplatformAsyncImage(imageUrl: String, modifier: Modifier) {
         ) {
             when (state.value) {
                 is AsyncImagePainter.State.Loading -> {
-                    CircularProgressIndicator()
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = rememberLottiePainter(
+                                composition = composition.value,
+                                progress = { animationState },
+                            ),
+                            contentDescription = "Loading Lottie animation",
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
                 }
 
                 is AsyncImagePainter.State.Error -> {

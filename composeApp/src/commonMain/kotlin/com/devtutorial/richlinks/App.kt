@@ -1,6 +1,7 @@
 package com.devtutorial.richlinks
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,12 +14,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.devtutorial.richlinks.ui.LinkItemView
 import com.devtutorial.richlinks.ui.theme.RichLinksTheme
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -32,33 +40,69 @@ fun App() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val linksList = listOf(
-        "https://not-valid-url", // --> Invalid URL
-        "https://m3.material.io/develop/android/jetpack-compose", // --> Valid URL
-        "https://expatexplore.com/blog/when-to-travel-weather-seasons/", // --> URL that does not contain image
-    )
+    val linksList = remember {
+        mutableStateOf(
+            listOf(
+                "https://not-valid-url", // --> Invalid URL
+                "https://m3.material.io/develop/android/jetpack-compose", // --> Valid URL
+                "https://expatexplore.com/blog/when-to-travel-weather-seasons/", // --> URL that does not contain image
+            )
+        )
+    }
+    val pullToRefreshState = rememberPullToRefreshState()
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) {
+            linksList.value = emptyList()
+            delay(2000)
+            linksList.value = listOf(
+                "https://not-valid-url", // --> Invalid URL
+                "https://m3.material.io/develop/android/jetpack-compose", // --> Valid URL
+                "https://expatexplore.com/blog/when-to-travel-weather-seasons/", // --> URL that does not contain image
+            )
+            pullToRefreshState.endRefresh()
+        }
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)),
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)
+                ),
                 title = { Text("Rich Links") },
             )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .wrapContentSize(Alignment.TopCenter),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            items(linksList) { link ->
-                LinkItemView(link = link)
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.TopCenter),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(linksList.value) { link ->
+                    LinkItemView(link = link)
+                }
             }
+
+            PullToRefreshContainer(
+                modifier = Modifier
+                    .then(
+                        if (pullToRefreshState.isRefreshing) {
+                            Modifier.padding(top = paddingValues.calculateTopPadding())
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .align(Alignment.TopCenter),
+                state = pullToRefreshState,
+            )
         }
     }
 }
