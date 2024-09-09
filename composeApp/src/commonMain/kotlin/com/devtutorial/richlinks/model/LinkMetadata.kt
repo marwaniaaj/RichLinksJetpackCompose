@@ -32,24 +32,10 @@ data class LinkMetadata(
  * @param url The URL to fetch metadata from.
  * @return A [LinkViewState] object representing the result of the metadata fetch operation.
  */
-suspend fun fetchMetadata(url: String): LinkViewState {
+suspend fun fetchMetadata(url: Url): LinkViewState {
 
     return runCatching {
-        val parsedUrl = Url(url)
-        val host = parsedUrl.host
-
-        // Fetch HTML content using Ktor
-        val response = try {
-            println("test" + parsedUrl.toString())
-            getHttpClient().get(parsedUrl.toString())
-        } catch (e: Exception) {
-            println("test" + e.printStackTrace())
-            return LinkViewState.Failure(Exception("Failed to fetch URL: ${e.message}"))
-        }
-
-        if (response.status != HttpStatusCode.OK) {
-            return LinkViewState.Failure(Exception("HTTP error: ${response.status}"))
-        }
+        val response = getHttpClient().get(url)
 
         val htmlContent: String = response.bodyAsText()
         if (htmlContent.isEmpty()) {
@@ -58,7 +44,7 @@ suspend fun fetchMetadata(url: String): LinkViewState {
 
         // Parse HTML using KSoup
         val doc: Document = try {
-            Ksoup.parse(htmlContent, url)
+            Ksoup.parse(htmlContent, url.fullPath)
         } catch (e: Exception) {
             return LinkViewState.Failure(Exception("Failed to parse HTML: ${e.message}"))
         }
@@ -68,7 +54,7 @@ suspend fun fetchMetadata(url: String): LinkViewState {
         val description = doc.select("meta[property=og:description]").attr("content")
         val imageUrl = doc.select("meta[property=og:image]").attr("content")
 
-        LinkViewState.Success(LinkMetadata(url, host, title, description, imageUrl))
+        LinkViewState.Success(LinkMetadata(url.fullPath, response.request.url.host, title, description, imageUrl))
     }.getOrElse { throwable ->
         println("MetadataFetch Error fetching metadata: ${throwable.message}")
         throwable.printStackTrace()

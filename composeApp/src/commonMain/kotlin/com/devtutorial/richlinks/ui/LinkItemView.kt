@@ -33,6 +33,8 @@ import com.devtutorial.richlinks.model.LinkMetadata
 import com.devtutorial.richlinks.model.LinkViewState
 import com.devtutorial.richlinks.model.fetchMetadata
 import com.devtutorial.richlinks.openLink
+import io.ktor.http.*
+import io.ktor.http.URLBuilder
 import org.jetbrains.compose.resources.painterResource
 import richlinks.composeapp.generated.resources.Res
 import richlinks.composeapp.generated.resources.link_off
@@ -45,7 +47,15 @@ fun LinkItemView(
     var loadingState by remember { mutableStateOf<LinkViewState>(LinkViewState.Loading) }
 
     LaunchedEffect(link) {
-        loadingState = fetchMetadata(link)
+        val parsedUrl = parseUrl(link) ?: kotlin.run {
+            loadingState = LinkViewState.Failure(Exception("Failed to fetch URL"))
+        }
+        val urlBuilder = parseUrl(link)?.let { URLBuilder(it) }
+        if (urlBuilder == null) {
+            loadingState =  LinkViewState.Failure(Exception("Failed to fetch URL"))
+        }
+        val builder = URLBuilder(parsedUrl as Url).build()
+        loadingState = fetchMetadata(builder)
     }
 
     Box(

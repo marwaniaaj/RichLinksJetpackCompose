@@ -64,7 +64,6 @@ actual fun MultiplatformAsyncImage(imageUrl: String, modifier: Modifier) {
             contentScale = ContentScale.Crop,
             onState = {
                 state.value = it
-                println("test" + it.painter)
             }
         ) {
             when (state.value) {
