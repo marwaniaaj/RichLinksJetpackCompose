@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
@@ -78,7 +80,7 @@ fun LinkItemView(
         when (val state = loadingState) {
             is LinkViewState.Loading -> LoadingView()
             is LinkViewState.Success -> SuccessView(state.metadata, link)
-            is LinkViewState.Failure -> FailureView()
+            is LinkViewState.Failure -> FailureView(link)
         }
     }
 }
@@ -158,7 +160,7 @@ private fun SuccessView(metadata: LinkMetadata, link: String) {
 }
 
 @Composable
-private fun FailureView() {
+private fun FailureView(link: String) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -172,10 +174,22 @@ private fun FailureView() {
             modifier = Modifier.size(25.dp),
             tint = Color.Red
         )
-        Text(
-            text = "Provided link is invalid",
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
-        )
+        Column(
+            modifier = Modifier.wrapContentSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Provided link is invalid",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = link,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
